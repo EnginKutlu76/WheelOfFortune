@@ -1,0 +1,94 @@
+
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using VertigoGames.Core;
+using VertigoGames.Gameplay;
+
+namespace VertigoGames.UI
+{
+    public class GameResultUIController : MonoBehaviour
+    {
+        [Header("Result UI")]
+        [SerializeField] private GameObject resultPanel;
+        [SerializeField] private TMP_Text resultTitleText;
+        [SerializeField] private TMP_Text resultRewardText;
+        [SerializeField] private Button restartButton;
+        [SerializeField] private Button spinButton;
+
+        private bool resultShown;
+
+        private void OnEnable()
+        {
+            if (restartButton != null)
+                restartButton.onClick.AddListener(RestartGame);
+
+            if (resultPanel != null)
+                resultPanel.SetActive(false);
+
+            resultShown = false;
+        }
+
+        private void OnDisable()
+        {
+            if (restartButton != null)
+                restartButton.onClick.RemoveListener(RestartGame);
+        }
+
+        private void Update()
+        {
+            if (resultShown || GameManager.Instance == null)
+                return;
+
+            if (GameManager.Instance.IsGameOver)
+            {
+                ShowResult(false);
+            }
+            else if (GameManager.Instance.HasExited)
+            {
+                ShowResult(true);
+            }
+        }
+
+        private void ShowResult(bool collected)
+        {
+            resultShown = true;
+
+            if (resultPanel != null)
+                resultPanel.SetActive(true);
+
+            if (resultTitleText != null)
+            {
+                resultTitleText.text = collected
+                    ? "REWARDS COLLECTED"
+                    : "BOMB HIT";
+            }
+
+            if (resultRewardText != null)
+            {
+                resultRewardText.text = collected
+                    ? $"FINAL REWARD: {GameManager.Instance.AccumulatedRewards}"
+                    : "ALL ACCUMULATED REWARDS LOST";
+            }
+
+            if (spinButton != null)
+                spinButton.interactable = false;
+        }
+
+        private void RestartGame()
+        {
+            if (GameManager.Instance == null)
+                return;
+
+            GameManager.Instance.RestartRun();
+
+            resultShown = false;
+
+            if (resultPanel != null)
+                resultPanel.SetActive(false);
+
+            if (spinButton != null)
+                spinButton.interactable = true;
+        }
+    }
+}
