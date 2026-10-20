@@ -19,5 +19,19 @@ namespace VertigoGames.Data
         public SliceType Type => type;
         public RewardData Reward => reward;
         public float Weight => weight;
+
+        public bool IsValid =>
+            weight >= 0f &&
+            (type == SliceType.Bomb || reward != null);
+
+        public WheelSliceData Clone()
+        {
+            return new WheelSliceData
+            {
+                type = type,
+                reward = reward,
+                weight = weight
+            };
+        }
     }
 }

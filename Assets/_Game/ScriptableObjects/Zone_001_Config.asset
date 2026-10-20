@@ -27,9 +27,9 @@ MonoBehaviour:
   - type: 0
     reward: {fileID: 11400000, guid: 3a1086ed919883642bd5b321f023f31e, type: 2}
     weight: 1
-  - type: 0
-    reward: {fileID: 11400000, guid: 3a1086ed919883642bd5b321f023f31e, type: 2}
-    weight: 1
+  - type: 1
+    reward: {fileID: 0}
+    weight: 0
   - type: 0
     reward: {fileID: 11400000, guid: 3a1086ed919883642bd5b321f023f31e, type: 2}
     weight: 1

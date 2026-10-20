@@ -1,4 +1,4 @@
-
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -40,11 +40,15 @@ namespace VertigoGames.Gameplay
         [SerializeField] private Sprite goldWheelSprite;
         [SerializeField] private Sprite goldPointerSprite;
 
+        [Header("Slice Visuals")]
+        [SerializeField] private WheelSliceVisualController sliceVisualController;
 
         private bool isSpinning;
         private Tween spinTween;
         private int selectedSliceIndex = -1;
         private ZoneConfig activeZoneConfig;
+
+        private List<WheelSliceData> activeSlices;
 
         private void OnValidate()
         {
@@ -57,7 +61,40 @@ namespace VertigoGames.Gameplay
         {
             if (spinButton != null)
                 spinButton.onClick.AddListener(Spin);
+
+            if (GameManager.Instance == null)
+            {
+                Debug.LogError("GameManager is not initialized.");
+                return;
+            }
+
             UpdateZoneVisuals();
+            InitializeSliceVisuals();
+        }
+
+
+        private void InitializeSliceVisuals()
+        {
+            activeZoneConfig = GetCurrentZoneConfig();
+
+            if (activeZoneConfig == null)
+            {
+                Debug.LogError("Missing zone configuration at initialization.");
+                return;
+            }
+
+            activeSlices = activeZoneConfig.CreateSpinSlices();
+
+            if (activeSlices == null)
+                return;
+
+            if (sliceVisualController == null)
+            {
+                Debug.LogError("Slice Visual Controller is not assigned.");
+                return;
+            }
+
+            sliceVisualController.UpdateSliceVisuals(activeSlices);
         }
 
         private void OnDisable()
@@ -101,13 +138,22 @@ namespace VertigoGames.Gameplay
 
             activeZoneConfig = GetCurrentZoneConfig();
 
+            activeSlices = activeZoneConfig != null
+                ? activeZoneConfig.CreateSpinSlices()
+                : null;
+
+            if (activeSlices == null)
+                return;
+
+            sliceVisualController?.UpdateSliceVisuals(activeSlices);
+
             if (activeZoneConfig == null)
             {
                 Debug.LogError("Missing configuration for the current zone type.");
                 return;
             }
 
-            var slices = activeZoneConfig.Slices;
+            var slices = activeSlices;
 
             if (slices == null || slices.Count != 8)
             {
@@ -147,9 +193,24 @@ namespace VertigoGames.Gameplay
                 maxFullRotations + 1);
 
             float currentAngle = wheelTransform.localEulerAngles.z;
+            float sliceAngle = 360f / activeSlices.Count;
+
+            float currentNormalizedAngle = Mathf.Repeat(
+                currentAngle,
+                360f);
+
+            float targetNormalizedAngle = Mathf.Repeat(
+                selectedSliceIndex * sliceAngle,
+                360f);
+
+            float alignmentAngle = Mathf.DeltaAngle(
+                currentNormalizedAngle,
+                targetNormalizedAngle);
+
             float targetAngle =
-                currentAngle - rotations * 360f
-                - selectedSliceIndex * 45f;
+                currentAngle
+                + rotations * 360f
+                + alignmentAngle;
 
             spinTween = wheelTransform
                 .DOLocalRotate(
@@ -162,7 +223,7 @@ namespace VertigoGames.Gameplay
 
         private int SelectSliceIndex()
         {
-            var slices = activeZoneConfig.Slices;
+            var slices = activeSlices;
             float totalWeight = 0f;
 
             for (int i = 0; i < slices.Count; i++)
@@ -222,7 +283,7 @@ namespace VertigoGames.Gameplay
                 return;
             }
 
-            var slices = activeZoneConfig.Slices;
+            var slices = activeSlices;
 
             if (selectedSliceIndex < 0 ||
                 selectedSliceIndex >= slices.Count)
@@ -232,6 +293,7 @@ namespace VertigoGames.Gameplay
             }
 
             WheelSliceData selectedSlice = slices[selectedSliceIndex];
+            Debug.Log($"Selected slice index: {selectedSliceIndex}");
 
             if (selectedSlice.Type == SliceType.Bomb)
             {
@@ -259,7 +321,9 @@ namespace VertigoGames.Gameplay
                 $"Reward collected: {selectedSlice.Reward.DisplayName}");
 
             GameManager.Instance.AdvanceZone();
+
             UpdateZoneVisuals();
+            InitializeSliceVisuals();
         }
 
         private void OnDestroy()
