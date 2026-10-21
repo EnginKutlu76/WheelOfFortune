@@ -23,7 +23,8 @@ namespace VertigoGames.Gameplay
         [SerializeField, Min(1)] private int minFullRotations = 4;
         [SerializeField, Min(1)] private int maxFullRotations = 6;
         [SerializeField, Min(0.1f)] private float spinDuration = 3f;
-
+        [SerializeField, Range(2f, 15f)] private float overshootAngle = 8f;
+        [SerializeField, Min(0.05f)] private float reboundDuration = 0.18f;
 
         [Header("Wheel Visuals")]
         [SerializeField] private Image wheelImage;
@@ -43,6 +44,9 @@ namespace VertigoGames.Gameplay
 
         [Header("Slice Visuals")]
         [SerializeField] private WheelSliceVisualController sliceVisualController;
+
+        [Header("Reward Presentation")]
+        [SerializeField] private RewardPresentationController rewardPresentationController;
 
         private bool isSpinning;
         private Tween spinTween;
@@ -145,37 +149,30 @@ namespace VertigoGames.Gameplay
 
             activeZoneConfig = GetCurrentZoneConfig();
 
-            activeSlices = activeZoneConfig != null
-                ? activeZoneConfig.CreateSpinSlices()
-                : null;
-
-            if (activeSlices == null)
-                return;
-
-            sliceVisualController?.UpdateSliceVisuals(activeSlices);
-
             if (activeZoneConfig == null)
             {
                 Debug.LogError("Missing configuration for the current zone type.");
                 return;
             }
 
-            var slices = activeSlices;
+            activeSlices = activeZoneConfig.CreateSpinSlices();
 
-            if (slices == null || slices.Count != 8)
+            if (activeSlices == null || activeSlices.Count != 8)
             {
                 Debug.LogError("The wheel configuration must contain exactly 8 slices.");
                 return;
             }
+
+            sliceVisualController?.UpdateSliceVisuals(activeSlices);
 
             bool isSafeZone =
                 GameManager.Instance.CurrentZoneType != ZoneType.Normal;
 
             if (isSafeZone)
             {
-                for (int i = 0; i < slices.Count; i++)
+                for (int i = 0; i < activeSlices.Count; i++)
                 {
-                    if (slices[i].Type == SliceType.Bomb)
+                    if (activeSlices[i].Type == SliceType.Bomb)
                     {
                         Debug.LogError(
                             "Safe and super configurations cannot contain bomb slices.");
@@ -202,10 +199,7 @@ namespace VertigoGames.Gameplay
             float currentAngle = wheelTransform.localEulerAngles.z;
             float sliceAngle = 360f / activeSlices.Count;
 
-            float currentNormalizedAngle = Mathf.Repeat(
-                currentAngle,
-                360f);
-
+            float currentNormalizedAngle = Mathf.Repeat(currentAngle, 360f);
             float targetNormalizedAngle = Mathf.Repeat(
                 selectedSliceIndex * sliceAngle,
                 360f);
@@ -215,17 +209,46 @@ namespace VertigoGames.Gameplay
                 targetNormalizedAngle);
 
             float targetAngle =
-                currentAngle
-                + rotations * 360f
-                + alignmentAngle;
+                currentAngle + rotations * 360f + alignmentAngle;
 
-            spinTween = wheelTransform
-                .DOLocalRotate(
-                    new Vector3(0f, 0f, targetAngle),
-                    spinDuration,
-                    RotateMode.FastBeyond360)
-                .SetEase(Ease.OutCubic)
-                .OnComplete(CompleteSpin);
+            bool useRebound = Random.value < 0.4f;
+
+            Sequence spinSequence = DOTween.Sequence();
+
+            if (useRebound)
+            {
+                float overshootTargetAngle = targetAngle + overshootAngle;
+
+                spinSequence.Append(
+                    wheelTransform
+                        .DOLocalRotate(
+                            new Vector3(0f, 0f, overshootTargetAngle),
+                            spinDuration,
+                            RotateMode.FastBeyond360)
+                        .SetEase(Ease.OutCubic));
+
+                spinSequence.Append(
+                    wheelTransform
+                        .DOLocalRotate(
+                            new Vector3(0f, 0f, targetAngle),
+                            reboundDuration,
+                            RotateMode.Fast)
+                        .SetEase(Ease.OutSine));
+            }
+            else
+            {
+                spinSequence.Append(
+                    wheelTransform
+                        .DOLocalRotate(
+                            new Vector3(0f, 0f, targetAngle),
+                            spinDuration,
+                            RotateMode.FastBeyond360)
+                        .SetEase(Ease.OutCubic));
+            }
+
+            spinSequence.OnComplete(CompleteSpin);
+
+            spinTween = spinSequence;
         }
 
         private int SelectSliceIndex()
@@ -265,41 +288,32 @@ namespace VertigoGames.Gameplay
 
         private void CompleteSpin()
         {
-            isSpinning = false;
-
             if (GameManager.Instance != null)
                 GameManager.Instance.SetSpinning(false);
 
             ResolveSpin();
-
-            if (spinButton != null &&
-                GameManager.Instance != null &&
-                !GameManager.Instance.IsGameOver &&
-                !GameManager.Instance.HasExited)
-            {
-                spinButton.interactable = true;
-            }
         }
 
-        private void    ResolveSpin()
+        private void ResolveSpin()
         {
             if (activeZoneConfig == null ||
                 GameManager.Instance == null)
             {
                 Debug.LogError("Missing active zone configuration or GameManager.");
+                UnlockSpinButton();
                 return;
             }
-
-            var slices = activeSlices;
 
             if (selectedSliceIndex < 0 ||
-                selectedSliceIndex >= slices.Count)
+                selectedSliceIndex >= activeSlices.Count)
             {
                 Debug.LogError("Selected slice index is invalid.");
+                UnlockSpinButton();
                 return;
             }
 
-            WheelSliceData selectedSlice = slices[selectedSliceIndex];
+            WheelSliceData selectedSlice = activeSlices[selectedSliceIndex];
+
             Debug.Log($"Selected slice index: {selectedSliceIndex}");
 
             if (selectedSlice.Type == SliceType.Bomb)
@@ -307,6 +321,7 @@ namespace VertigoGames.Gameplay
                 if (GameManager.Instance.CurrentZoneType != ZoneType.Normal)
                 {
                     Debug.LogError("Bomb result detected in a protected zone.");
+                    UnlockSpinButton();
                     return;
                 }
 
@@ -318,6 +333,7 @@ namespace VertigoGames.Gameplay
             if (selectedSlice.Reward == null)
             {
                 Debug.LogWarning("Selected reward slice has no RewardData assigned.");
+                UnlockSpinButton();
                 return;
             }
 
@@ -325,15 +341,54 @@ namespace VertigoGames.Gameplay
                 selectedSlice.Reward,
                 GameManager.Instance.CurrentZone);
 
-            GameManager.Instance.AddReward(rewardValue);
+            GameManager.Instance.AddReward(
+                selectedSlice.Reward,
+                rewardValue);
 
             Debug.Log(
                 $"Reward collected: {selectedSlice.Reward.DisplayName} (+{rewardValue})");
 
-            GameManager.Instance.AdvanceZone();
+            if (rewardPresentationController != null &&
+                selectedSlice.Reward.Icon != null)
+            {
+                rewardPresentationController.Play(
+                    selectedSlice.Reward.Icon,
+                    FinishRewardPresentation);
+            }
+            else
+            {
+                FinishRewardPresentation();
+            }
+        }
 
-            UpdateZoneVisuals();
-            InitializeSliceVisuals();
+        private void FinishRewardPresentation()
+        {
+            if (GameManager.Instance == null)
+                return;
+
+            if (!GameManager.Instance.IsGameOver &&
+                !GameManager.Instance.HasExited)
+            {
+                GameManager.Instance.AdvanceZone();
+
+                UpdateZoneVisuals();
+                InitializeSliceVisuals();
+            }
+
+            UnlockSpinButton();
+        }
+
+        private void UnlockSpinButton()
+        {
+            isSpinning = false;
+
+            if (spinButton != null &&
+                GameManager.Instance != null &&
+                !GameManager.Instance.IsGameOver &&
+                !GameManager.Instance.HasExited)
+            {
+                spinButton.interactable = true;
+            }
         }
 
         private void OnDestroy()
