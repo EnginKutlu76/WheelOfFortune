@@ -28,6 +28,7 @@ namespace VertigoGames.Gameplay
         {
             ConfigureRotationRect();
             PositionIcons();
+            ClearSliceVisuals();
         }
 
         private void OnValidate()

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using VertigoGames.Core;
 using VertigoGames.Data;
+using System.Collections;
 
 namespace VertigoGames.Gameplay
 {
@@ -62,11 +63,14 @@ namespace VertigoGames.Gameplay
             if (spinButton != null)
                 spinButton.onClick.AddListener(Spin);
 
-            if (GameManager.Instance == null)
-            {
-                Debug.LogError("GameManager is not initialized.");
-                return;
-            }
+            StartCoroutine(InitializeWhenReady());
+        }
+
+
+        private IEnumerator InitializeWhenReady()
+        {
+            while (GameManager.Instance == null)
+                yield return null;
 
             UpdateZoneVisuals();
             InitializeSliceVisuals();
@@ -79,14 +83,17 @@ namespace VertigoGames.Gameplay
 
             if (activeZoneConfig == null)
             {
-                Debug.LogError("Missing zone configuration at initialization.");
+                Debug.LogError("Missing zone configuration.");
                 return;
             }
 
             activeSlices = activeZoneConfig.CreateSpinSlices();
 
-            if (activeSlices == null)
+            if (activeSlices == null || activeSlices.Count != 8)
+            {
+                Debug.LogError("The zone must provide exactly 8 slices.");
                 return;
+            }
 
             if (sliceVisualController == null)
             {
@@ -274,7 +281,7 @@ namespace VertigoGames.Gameplay
             }
         }
 
-        private void ResolveSpin()
+        private void    ResolveSpin()
         {
             if (activeZoneConfig == null ||
                 GameManager.Instance == null)
@@ -314,11 +321,14 @@ namespace VertigoGames.Gameplay
                 return;
             }
 
-            GameManager.Instance.AddReward(
-                selectedSlice.Reward.Value);
+            int rewardValue = activeZoneConfig.GetRewardValue(
+                selectedSlice.Reward,
+                GameManager.Instance.CurrentZone);
+
+            GameManager.Instance.AddReward(rewardValue);
 
             Debug.Log(
-                $"Reward collected: {selectedSlice.Reward.DisplayName}");
+                $"Reward collected: {selectedSlice.Reward.DisplayName} (+{rewardValue})");
 
             GameManager.Instance.AdvanceZone();
 

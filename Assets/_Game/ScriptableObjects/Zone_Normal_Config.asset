@@ -39,3 +39,10 @@ MonoBehaviour:
   - type: 0
     reward: {fileID: 11400000, guid: 3a1086ed919883642bd5b321f023f31e, type: 2}
     weight: 1
+  normalBaseMultiplier: 1
+  normalMultiplierPerZone: 0.15
+  safeZoneMultiplier: 2
+  superZoneMultiplier: 10
+  rewardPool: {fileID: 11400000, guid: eba97c300820783469ecd868c206a546, type: 2}
+  useRewardPool: 1
+  bombSliceCount: 1

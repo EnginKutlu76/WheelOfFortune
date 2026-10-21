@@ -24,6 +24,19 @@ namespace VertigoGames.Data
             weight >= 0f &&
             (type == SliceType.Bomb || reward != null);
 
+        public static WheelSliceData Create(
+            SliceType type,
+            RewardData reward,
+            float weight = 1f)
+        {
+            return new WheelSliceData
+            {
+                type = type,
+                reward = reward,
+                weight = Mathf.Max(0f, weight)
+            };
+        }
+
         public WheelSliceData Clone()
         {
             return new WheelSliceData
