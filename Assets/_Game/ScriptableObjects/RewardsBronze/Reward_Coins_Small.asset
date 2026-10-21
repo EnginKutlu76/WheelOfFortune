@@ -15,4 +15,7 @@ MonoBehaviour:
   rewardId: coins_small
   displayName: Small Coins
   icon: {fileID: 952800183794916973, guid: ec800f1c06663a64aa4e261841488a9d, type: 3}
+  inventoryIcon: {fileID: 952800183794916973, guid: ec800f1c06663a64aa4e261841488a9d, type: 3}
   value: 10
+  category: 0
+  weaponPointType: 0

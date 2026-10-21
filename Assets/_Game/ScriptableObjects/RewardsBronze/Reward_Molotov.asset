@@ -15,4 +15,7 @@ MonoBehaviour:
   rewardId: molotov
   displayName: Molotov
   icon: {fileID: -3161244886251355856, guid: 9f069b19a747e8047a97cea4813d970b, type: 3}
+  inventoryIcon: {fileID: -3161244886251355856, guid: 9f069b19a747e8047a97cea4813d970b, type: 3}
   value: 1
+  category: 0
+  weaponPointType: 0

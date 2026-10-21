@@ -15,4 +15,7 @@ MonoBehaviour:
   rewardId: chest_small
   displayName: Small Chest
   icon: {fileID: -4379012504692226635, guid: 415ef6819f8218a49bc8f78be6bf5395, type: 3}
+  inventoryIcon: {fileID: -4379012504692226635, guid: 415ef6819f8218a49bc8f78be6bf5395, type: 3}
   value: 1
+  category: 0
+  weaponPointType: 0

@@ -15,4 +15,7 @@ MonoBehaviour:
   rewardId: grenade
   displayName: Grenade
   icon: {fileID: 7594543442363796413, guid: c392518d0258d964ea94cf0cf84458a7, type: 3}
+  inventoryIcon: {fileID: 7594543442363796413, guid: c392518d0258d964ea94cf0cf84458a7, type: 3}
   value: 1
+  category: 0
+  weaponPointType: 0

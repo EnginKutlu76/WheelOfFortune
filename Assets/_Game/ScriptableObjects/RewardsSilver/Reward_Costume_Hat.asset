@@ -10,9 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a4a822c02a2c84449cf1a2adc36e70a, type: 3}
-  m_Name: Reward_Money_Small 1
+  m_Name: Reward_Costume_Hat
   m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.Data.RewardData
-  rewardId: money_small
-  displayName: Small Money
-  icon: {fileID: 7347395048315886003, guid: 19ff5fc76dd08a74d8a9ebcbe42fcbb4, type: 3}
-  value: 250
+  rewardId: costume_hat
+  displayName: Costume Hat
+  icon: {fileID: -5733527284831398832, guid: ca5fb91d48c93b0479f3e3493fe45ff5, type: 3}
+  inventoryIcon: {fileID: -5733527284831398832, guid: ca5fb91d48c93b0479f3e3493fe45ff5, type: 3}
+  value: 1
+  category: 2
+  weaponPointType: 0

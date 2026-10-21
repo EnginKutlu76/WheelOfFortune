@@ -15,4 +15,7 @@ MonoBehaviour:
   rewardId: money_small
   displayName: Small Money
   icon: {fileID: 7347395048315886003, guid: 19ff5fc76dd08a74d8a9ebcbe42fcbb4, type: 3}
+  inventoryIcon: {fileID: 7347395048315886003, guid: 19ff5fc76dd08a74d8a9ebcbe42fcbb4, type: 3}
   value: 250
+  category: 0
+  weaponPointType: 0

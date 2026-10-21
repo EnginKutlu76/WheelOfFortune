@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a4a822c02a2c84449cf1a2adc36e70a, type: 3}
+  m_Name: Reward_Chest_Standard
+  m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.Data.RewardData
+  rewardId: chest_standard
+  displayName: Standard Chest
+  icon: {fileID: -4654250119808573944, guid: 9a9a53e435268c6409adc81ac368c1c0, type: 3}
+  inventoryIcon: {fileID: -4654250119808573944, guid: 9a9a53e435268c6409adc81ac368c1c0, type: 3}
+  value: 1
+  category: 0
+  weaponPointType: 0

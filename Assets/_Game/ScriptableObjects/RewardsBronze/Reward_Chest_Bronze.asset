@@ -15,4 +15,7 @@ MonoBehaviour:
   rewardId: chest_bronze
   displayName: Bronze Chest
   icon: {fileID: -8731708261444831326, guid: 50e95b1acb348324da27e76262b660d7, type: 3}
+  inventoryIcon: {fileID: -8731708261444831326, guid: 50e95b1acb348324da27e76262b660d7, type: 3}
   value: 1
+  category: 0
+  weaponPointType: 0

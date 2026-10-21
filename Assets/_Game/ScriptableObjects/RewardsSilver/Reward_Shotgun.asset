@@ -10,9 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a4a822c02a2c84449cf1a2adc36e70a, type: 3}
-  m_Name: Reward_HealthShot1
+  m_Name: Reward_Shotgun
   m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.Data.RewardData
-  rewardId: healthshot_one
-  displayName: Healthshot One
-  icon: {fileID: 3833793503973785886, guid: bccbd983909cf534989bd7d4ff319599, type: 3}
+  rewardId: shotgun
+  displayName: Shotgun
+  icon: {fileID: -1995457932549516950, guid: e7bf01fcc8c0f114a843abe576818637, type: 3}
+  inventoryIcon: {fileID: 2406621693580753259, guid: 6d8aec07f00cd4d469bd2db4f466127f, type: 3}
   value: 5
+  category: 1
+  weaponPointType: 4

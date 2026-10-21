@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a4a822c02a2c84449cf1a2adc36e70a, type: 3}
   m_Name: Reward_Coins_Large
   m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.Data.RewardData
-  rewardId: coins_medium
-  displayName: Small Coins
+  rewardId: coins_large
+  displayName: Large Coins
   icon: {fileID: 952800183794916973, guid: ec800f1c06663a64aa4e261841488a9d, type: 3}
-  value: 50
+  inventoryIcon: {fileID: 952800183794916973, guid: ec800f1c06663a64aa4e261841488a9d, type: 3}
+  value: 100
+  category: 0
+  weaponPointType: 0

@@ -43,6 +43,6 @@ MonoBehaviour:
   normalMultiplierPerZone: 0.15
   safeZoneMultiplier: 2
   superZoneMultiplier: 10
-  rewardPool: {fileID: 11400000, guid: 4f29bc48dfd798d4bafeb4d0ab570e73, type: 2}
-  useRewardPool: 0
+  rewardPool: {fileID: 11400000, guid: 3f0fa6d185400dd48992209fe5a26d7d, type: 2}
+  useRewardPool: 1
   bombSliceCount: 0

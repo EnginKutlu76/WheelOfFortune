@@ -12,4 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b8bb94d648736b45965934e4b684698, type: 3}
   m_Name: RewardPool_Gold
   m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.Data.RewardPoolData
-  entries: []
+  entries:
+  - reward: {fileID: 11400000, guid: f6c63ba2e22799c4ca2bc08b7e2c185c, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: 246faeffd9202c04885f7eccfac10bb3, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: 9a0d59d2a60ad36428b48925c6b31759, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: b05e96d40f0a4c84c996c6327bad9863, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: 91e0da2ab896ce64683adc567b20308f, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: 665d6ad6439bc754d95c7da561b4e669, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: 36aed6d6bf028504fa6fdd0af16c4146, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: 360a515130aa6f44282f1b9b1d0956a1, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: b5d65f255bead824092bb2f45802a543, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: 4c86675996ed09849aa17f0d12a4b88d, type: 2}
+    weight: 1

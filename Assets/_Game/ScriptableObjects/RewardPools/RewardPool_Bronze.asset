@@ -13,19 +13,25 @@ MonoBehaviour:
   m_Name: RewardPool_Bronze
   m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.Data.RewardPoolData
   entries:
-  - reward: {fileID: 11400000, guid: 3a1086ed919883642bd5b321f023f31e, type: 2}
+  - reward: {fileID: 11400000, guid: ba51348d5dde6e345beef8371ec94c4a, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: f980c33b9df29de40a98edd681c9ef52, type: 2}
     weight: 1
   - reward: {fileID: 11400000, guid: 3a1086ed919883642bd5b321f023f31e, type: 2}
     weight: 1
-  - reward: {fileID: 11400000, guid: 3a1086ed919883642bd5b321f023f31e, type: 2}
+  - reward: {fileID: 11400000, guid: 9b0ad43a4c7f52842a97a28da06e09c1, type: 2}
     weight: 1
-  - reward: {fileID: 11400000, guid: 3a1086ed919883642bd5b321f023f31e, type: 2}
+  - reward: {fileID: 11400000, guid: c297bf42112b9a44488b482d1b9108c2, type: 2}
     weight: 1
-  - reward: {fileID: 11400000, guid: 3a1086ed919883642bd5b321f023f31e, type: 2}
+  - reward: {fileID: 11400000, guid: be4bea665784e5848af308dce9587c53, type: 2}
     weight: 1
-  - reward: {fileID: 11400000, guid: 3a1086ed919883642bd5b321f023f31e, type: 2}
+  - reward: {fileID: 11400000, guid: 076aea7743c277b49aec41e9ac26cd67, type: 2}
     weight: 1
-  - reward: {fileID: 11400000, guid: 3a1086ed919883642bd5b321f023f31e, type: 2}
+  - reward: {fileID: 11400000, guid: 907c61256533d7f46b0cbff7499e9f97, type: 2}
     weight: 1
-  - reward: {fileID: 11400000, guid: 3a1086ed919883642bd5b321f023f31e, type: 2}
+  - reward: {fileID: 11400000, guid: 92b458c070f1ca54abaffd49e868a876, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: c69779885323e054a9e693ad16248505, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: f40525f7a36da384194a4fd29c29b895, type: 2}
     weight: 1
