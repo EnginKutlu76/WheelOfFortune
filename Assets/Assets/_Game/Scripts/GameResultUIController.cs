@@ -1,4 +1,3 @@
-
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +14,10 @@ namespace VertigoGames.UI
         [SerializeField] private TMP_Text resultRewardText;
         [SerializeField] private Button restartButton;
         [SerializeField] private Button spinButton;
+
+        [Header("Gameplay References")]
+        [SerializeField] private WheelSpinController wheelSpinController;
+        [SerializeField] private RewardPresentationController rewardPresentationController;
 
         private bool resultShown;
 
@@ -41,13 +44,9 @@ namespace VertigoGames.UI
                 return;
 
             if (GameManager.Instance.IsGameOver)
-            {
                 ShowResult(false);
-            }
             else if (GameManager.Instance.HasExited)
-            {
                 ShowResult(true);
-            }
         }
 
         private void ShowResult(bool collected)
@@ -82,10 +81,29 @@ namespace VertigoGames.UI
 
             GameManager.Instance.RestartRun();
 
-            resultShown = false;
+            // Find the presentation controller even if Inspector reference is missing.
+            if (rewardPresentationController == null)
+            {
+                rewardPresentationController =
+                    FindFirstObjectByType<RewardPresentationController>(FindObjectsInactive.Include);
+            }
+
+            if (rewardPresentationController != null)
+                rewardPresentationController.ResetPresentation();
 
             if (resultPanel != null)
                 resultPanel.SetActive(false);
+
+            resultShown = false;
+
+            if (wheelSpinController == null)
+            {
+                wheelSpinController =
+                    FindFirstObjectByType<WheelSpinController>();
+            }
+
+            if (wheelSpinController != null)
+                wheelSpinController.RefreshAfterRestart();
 
             if (spinButton != null)
                 spinButton.interactable = true;

@@ -48,12 +48,18 @@ namespace VertigoGames.Gameplay
         [Header("Reward Presentation")]
         [SerializeField] private RewardPresentationController rewardPresentationController;
 
+        [SerializeField] private UnityEngine.UI.Image sparkleRightImage;
+
         private bool isSpinning;
         private Tween spinTween;
         private int selectedSliceIndex = -1;
         private ZoneConfig activeZoneConfig;
 
         private List<WheelSliceData> activeSlices;
+
+        [SerializeField] private Image resultPanelImage;
+        [SerializeField] private Color normalPanelColor = Color.white;
+        [SerializeField] private Color bombPanelColor = new Color(0.35f, 0.05f, 0.05f, 1f);
 
         private void OnValidate()
         {
@@ -116,6 +122,9 @@ namespace VertigoGames.Gameplay
             spinTween?.Kill();
             spinTween = null;
             isSpinning = false;
+
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.StopWheelSpin();
         }
 
         private ZoneConfig GetCurrentZoneConfig()
@@ -151,7 +160,9 @@ namespace VertigoGames.Gameplay
 
             if (activeZoneConfig == null)
             {
-                Debug.LogError("Missing configuration for the current zone type.");
+                Debug.LogError(
+                    "Missing configuration for the current zone type.");
+
                 return;
             }
 
@@ -159,7 +170,9 @@ namespace VertigoGames.Gameplay
 
             if (activeSlices == null || activeSlices.Count != 8)
             {
-                Debug.LogError("The wheel configuration must contain exactly 8 slices.");
+                Debug.LogError(
+                    "The wheel configuration must contain exactly 8 slices.");
+
                 return;
             }
 
@@ -176,6 +189,7 @@ namespace VertigoGames.Gameplay
                     {
                         Debug.LogError(
                             "Safe and super configurations cannot contain bomb slices.");
+
                         return;
                     }
                 }
@@ -192,6 +206,9 @@ namespace VertigoGames.Gameplay
             if (spinButton != null)
                 spinButton.interactable = false;
 
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.StartWheelSpin();
+
             int rotations = Random.Range(
                 minFullRotations,
                 maxFullRotations + 1);
@@ -200,6 +217,7 @@ namespace VertigoGames.Gameplay
             float sliceAngle = 360f / activeSlices.Count;
 
             float currentNormalizedAngle = Mathf.Repeat(currentAngle, 360f);
+
             float targetNormalizedAngle = Mathf.Repeat(
                 selectedSliceIndex * sliceAngle,
                 360f);
@@ -288,6 +306,9 @@ namespace VertigoGames.Gameplay
 
         private void CompleteSpin()
         {
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.StopWheelSpin();
+
             if (GameManager.Instance != null)
                 GameManager.Instance.SetSpinning(false);
 
@@ -299,7 +320,9 @@ namespace VertigoGames.Gameplay
             if (activeZoneConfig == null ||
                 GameManager.Instance == null)
             {
-                Debug.LogError("Missing active zone configuration or GameManager.");
+                Debug.LogError(
+                    "Missing active zone configuration or GameManager.");
+
                 UnlockSpinButton();
                 return;
             }
@@ -320,22 +343,40 @@ namespace VertigoGames.Gameplay
             {
                 if (GameManager.Instance.CurrentZoneType != ZoneType.Normal)
                 {
-                    Debug.LogError("Bomb result detected in a protected zone.");
+                    Debug.LogError(
+                        "Bomb result detected in a protected zone.");
+
                     UnlockSpinButton();
                     return;
                 }
 
+                UpdateResultPanelColor(true);
+
+                if (AudioManager.Instance != null)
+                    AudioManager.Instance.PlayBombHit();
+
                 GameManager.Instance.TriggerBomb();
+
+                if (sparkleRightImage != null)
+                    sparkleRightImage.color = new Color32(139, 0, 0, 255);
+
+                if (rewardPresentationController != null)
+                    rewardPresentationController.ShowBomb();
+
                 Debug.Log("Bomb hit. Accumulated rewards lost.");
                 return;
             }
 
             if (selectedSlice.Reward == null)
             {
-                Debug.LogWarning("Selected reward slice has no RewardData assigned.");
+                Debug.LogWarning(
+                    "Selected reward slice has no RewardData assigned.");
+
                 UnlockSpinButton();
                 return;
             }
+
+            UpdateResultPanelColor(false);
 
             int rewardValue = activeZoneConfig.GetRewardValue(
                 selectedSlice.Reward,
@@ -430,5 +471,41 @@ namespace VertigoGames.Gameplay
                 pointerImage.sprite = pointerSprite;
         }
 
+        public void RefreshAfterRestart()
+        {
+            if (GameManager.Instance == null)
+                return;
+
+            spinTween?.Kill();
+            spinTween = null;
+            isSpinning = false;
+            selectedSliceIndex = -1;
+
+            GameManager.Instance.SetSpinning(false);
+
+            if (spinButton != null)
+                spinButton.interactable = true;
+
+            if (rewardPresentationController != null)
+                rewardPresentationController.ResetPresentation();
+
+            if (sparkleRightImage != null)
+                sparkleRightImage.color = Color.white;
+
+            UpdateResultPanelColor(false);
+
+            UpdateZoneVisuals();
+            InitializeSliceVisuals();
+        }
+
+        private void UpdateResultPanelColor(bool isBomb)
+        {
+            if (resultPanelImage == null)
+                return;
+
+            resultPanelImage.color = isBomb
+                ? bombPanelColor
+                : normalPanelColor;
+        }
     }
 }

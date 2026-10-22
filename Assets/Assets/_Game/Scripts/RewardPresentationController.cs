@@ -12,6 +12,7 @@ namespace VertigoGames.Gameplay
         [SerializeField] private Image rewardImage;
         [SerializeField] private Image leftSparkle;
         [SerializeField] private Image rightSparkle;
+        [SerializeField] private Sprite bombIcon;
 
         [Header("Animation")]
         [SerializeField, Min(0.1f)] private float showDuration = 0.3f;
@@ -33,7 +34,27 @@ namespace VertigoGames.Gameplay
 
         public void Play(Sprite rewardSprite, Action completed)
         {
-            if (rewardSprite == null || rewardImage == null ||
+            PlayInternal(rewardSprite, completed, false);
+        }
+
+        public void ShowBomb()
+        {
+            if (bombIcon == null)
+            {
+                Debug.LogError("Bomb icon is not assigned.");
+                return;
+            }
+
+            PlayInternal(bombIcon, null, true);
+        }
+
+        private void PlayInternal(
+            Sprite sprite,
+            Action completed,
+            bool keepVisible)
+        {
+            if (sprite == null ||
+                rewardImage == null ||
                 presentationRoot == null)
             {
                 completed?.Invoke();
@@ -41,12 +62,14 @@ namespace VertigoGames.Gameplay
             }
 
             sequence?.Kill();
+            sequence = null;
+
             onFinished = completed;
             IsPlaying = true;
 
             presentationRoot.SetActive(true);
 
-            rewardImage.sprite = rewardSprite;
+            rewardImage.sprite = sprite;
             rewardImage.type = Image.Type.Simple;
             rewardImage.preserveAspect = true;
             rewardImage.color = Color.white;
@@ -60,11 +83,15 @@ namespace VertigoGames.Gameplay
                 leftSparkle.rectTransform.localRotation = Quaternion.identity;
 
             if (rightSparkle != null)
+            {
                 rightSparkle.rectTransform.localRotation = Quaternion.identity;
+
+                if (keepVisible)
+                    rightSparkle.color = new Color32(139, 0, 0, 255);
+            }
 
             sequence = DOTween.Sequence();
 
-            // Brief spark before the reward appears.
             if (leftSparkle != null)
             {
                 sequence.Append(
@@ -78,7 +105,6 @@ namespace VertigoGames.Gameplay
                         .SetEase(Ease.InQuad));
             }
 
-            // Reveal the reward while the right sparkle rotates.
             sequence.Append(
                 rewardImage.rectTransform
                     .DOScale(rewardScale, showDuration)
@@ -100,6 +126,17 @@ namespace VertigoGames.Gameplay
                         .SetEase(Ease.OutCubic));
             }
 
+            if (keepVisible)
+            {
+                sequence.OnComplete(() =>
+                {
+                    IsPlaying = false;
+                    sequence = null;
+                });
+
+                return;
+            }
+
             sequence.AppendInterval(holdDuration);
 
             sequence.Append(
@@ -107,7 +144,8 @@ namespace VertigoGames.Gameplay
                     .DOScale(0f, hideDuration)
                     .SetEase(Ease.InBack));
 
-            sequence.Join(rewardImage.DOFade(0f, hideDuration));
+            sequence.Join(
+                rewardImage.DOFade(0f, hideDuration));
 
             if (rightSparkle != null)
             {
@@ -125,6 +163,7 @@ namespace VertigoGames.Gameplay
             if (sparkle == null)
                 return;
 
+            sparkle.rectTransform.DOKill();
             sparkle.gameObject.SetActive(true);
             sparkle.color = Color.white;
             sparkle.rectTransform.localScale = Vector3.zero;
@@ -132,12 +171,42 @@ namespace VertigoGames.Gameplay
 
         private void Finish()
         {
-            presentationRoot.SetActive(false);
+            if (presentationRoot != null)
+                presentationRoot.SetActive(false);
+
             IsPlaying = false;
+            sequence = null;
 
             Action callback = onFinished;
             onFinished = null;
             callback?.Invoke();
+        }
+
+        public void ResetPresentation()
+        {
+            sequence?.Kill();
+            sequence = null;
+            onFinished = null;
+            IsPlaying = false;
+
+            if (presentationRoot != null)
+                presentationRoot.SetActive(false);
+
+            if (rewardImage != null)
+            {
+                rewardImage.rectTransform.DOKill();
+                rewardImage.rectTransform.localScale = Vector3.zero;
+                rewardImage.color = Color.white;
+            }
+
+            ResetSparkle(leftSparkle);
+            ResetSparkle(rightSparkle);
+
+            if (leftSparkle != null)
+                leftSparkle.rectTransform.localRotation = Quaternion.identity;
+
+            if (rightSparkle != null)
+                rightSparkle.rectTransform.localRotation = Quaternion.identity;
         }
 
         private void OnDestroy()

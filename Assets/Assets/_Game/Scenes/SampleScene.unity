@@ -150,6 +150,7 @@ RectTransform:
   m_Children:
   - {fileID: 2104933942}
   - {fileID: 1785941374}
+  - {fileID: 421700596}
   - {fileID: 1703499433}
   m_Father: {fileID: 54840751}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -174,6 +175,7 @@ MonoBehaviour:
   rewardImage: {fileID: 1703499434}
   leftSparkle: {fileID: 2104933943}
   rightSparkle: {fileID: 1785941375}
+  bombIcon: {fileID: -6860072587592751284, guid: 11e79a79d820a6344bbbd3985135ea19, type: 3}
   showDuration: 0.3
   holdDuration: 0.7
   hideDuration: 0.35
@@ -380,6 +382,8 @@ MonoBehaviour:
   resultRewardText: {fileID: 333621785}
   restartButton: {fileID: 387547771}
   spinButton: {fileID: 1379532285}
+  wheelSpinController: {fileID: 0}
+  rewardPresentationController: {fileID: 0}
 --- !u!1 &227898229
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,6 +397,7 @@ GameObject:
   - component: {fileID: 227898232}
   - component: {fileID: 227898231}
   - component: {fileID: 227898234}
+  - component: {fileID: 227898235}
   m_Layer: 5
   m_Name: ui_button_cash_out
   m_TagString: Untagged
@@ -516,6 +521,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.UI.CashOutController
   cashOutButton: {fileID: 227898231}
   cashOutText: {fileID: 1724571637}
+--- !u!114 &227898235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227898229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caceca7acadc7664ca12d354644fecc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.UI.UIButtonSFX
+  soundType: 1
 --- !u!1 &271306569
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,8 +780,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 325.79993, y: 84.7}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 350, y: 150}
+  m_SizeDelta: {x: 600, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &333621785
 MonoBehaviour:
@@ -794,8 +812,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4280032352
+  m_fontColor: {r: 0.37647063, g: 0.10980393, b: 0.10980393, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -812,14 +830,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 135.8
+  m_fontSizeBase: 135.8
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -877,6 +895,7 @@ GameObject:
   - component: {fileID: 387547773}
   - component: {fileID: 387547772}
   - component: {fileID: 387547771}
+  - component: {fileID: 387547774}
   m_Layer: 5
   m_Name: ui_button_restart
   m_TagString: Untagged
@@ -901,7 +920,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 278.4}
+  m_AnchoredPosition: {x: 0, y: 350}
   m_SizeDelta: {x: 256, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &387547771
@@ -986,6 +1005,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 387547769}
   m_CullTransparentMesh: 1
+--- !u!114 &387547774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387547769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caceca7acadc7664ca12d354644fecc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.UI.UIButtonSFX
+  soundType: 0
 --- !u!1 &405779646
 GameObject:
   m_ObjectHideFlags: 0
@@ -1136,6 +1168,81 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 413805855}
   m_CullTransparentMesh: 1
+--- !u!1 &421700595
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 421700596}
+  - component: {fileID: 421700598}
+  - component: {fileID: 421700597}
+  m_Layer: 5
+  m_Name: ui_card_frame_gardient
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &421700596
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421700595}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 21223403}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 700, y: 700}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &421700597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421700595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 0
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 4120212482102018286, guid: 7bcf480f175efc74db6996cd755bddf4, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &421700598
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421700595}
+  m_CullTransparentMesh: 1
 --- !u!1 &454275767
 GameObject:
   m_ObjectHideFlags: 0
@@ -1245,6 +1352,10 @@ MonoBehaviour:
   goldPointerSprite: {fileID: 8294000708589155680, guid: fa0ae89ab2f73e24595acc6cb0173f57, type: 3}
   sliceVisualController: {fileID: 1759028974}
   rewardPresentationController: {fileID: 21223404}
+  sparkleRightImage: {fileID: 1785941375}
+  resultPanelImage: {fileID: 861110230}
+  normalPanelColor: {r: 1, g: 1, b: 1, a: 0.39215687}
+  bombPanelColor: {r: 0.35, g: 0.05, b: 0.05, a: 1}
 --- !u!114 &473989723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1346,6 +1457,56 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &529095458
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 529095460}
+  - component: {fileID: 529095459}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &529095459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529095458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e1d56f219a46e245a68a3abb6c1e056, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.Core.AudioManager
+  bombHitClip: {fileID: 8300000, guid: 40380bc1476e11247b91c1e096f0c89d, type: 3}
+  collectButtonClip: {fileID: 8300000, guid: bd663ab404f95674b809feccc120e2ac, type: 3}
+  wheelSpinClip: {fileID: 8300000, guid: 4eab5fb831732ee438e762e38486d8a3, type: 3}
+  buttonClickClip: {fileID: 8300000, guid: fe5f41ef3973bbe478b517de8e7273bb, type: 3}
+  sfxVolume: 1
+  wheelSpinVolume: 0.7
+--- !u!4 &529095460
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529095458}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 789.8899, y: 217.62366, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1605,7 +1766,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &861110229
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2129,8 +2290,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 25}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 0, y: 150}
+  m_SizeDelta: {x: 600, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &944121957
 MonoBehaviour:
@@ -2152,7 +2313,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "BOMB HIT\t"
+  m_text: BOMB HIT!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8baec975be14bdf4f8dc1a35b3415ffa, type: 2}
   m_sharedMaterial: {fileID: -4979994399008650672, guid: 8baec975be14bdf4f8dc1a35b3415ffa, type: 2}
@@ -2161,8 +2322,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4280229729
+  m_fontColor: {r: 0.381132, g: 0.12009252, b: 0.12009252, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2179,13 +2340,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 129.3
+  m_fontSizeBase: 129.3
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -2571,6 +2732,8 @@ MonoBehaviour:
   safeColor: {r: 0, g: 1, b: 0, a: 1}
   superColor: {r: 1, g: 0.75, b: 0.2, a: 1}
   selectorColor: {r: 1, g: 1, b: 1, a: 1}
+  selectorWidthRatio: 0.85
+  selectorHeightRatio: 0.85
   moveDuration: 0.25
 --- !u!1 &1252424708
 GameObject:
@@ -2659,6 +2822,7 @@ GameObject:
   - component: {fileID: 1379532287}
   - component: {fileID: 1379532286}
   - component: {fileID: 1379532285}
+  - component: {fileID: 1379532288}
   m_Layer: 5
   m_Name: ui_button_spin
   m_TagString: Untagged
@@ -2768,6 +2932,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1379532283}
   m_CullTransparentMesh: 1
+--- !u!114 &1379532288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379532283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caceca7acadc7664ca12d354644fecc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.UI.UIButtonSFX
+  soundType: 0
 --- !u!1 &1427696677
 GameObject:
   m_ObjectHideFlags: 0
@@ -4165,3 +4342,4 @@ SceneRoots:
   - {fileID: 54840751}
   - {fileID: 923442226}
   - {fileID: 1574680597}
+  - {fileID: 529095460}

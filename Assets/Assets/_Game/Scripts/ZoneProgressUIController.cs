@@ -27,6 +27,11 @@ namespace VertigoGames.UI
         [SerializeField] private Color safeColor = Color.green;
         [SerializeField] private Color superColor = new Color(1f, 0.75f, 0.2f);
         [SerializeField] private Color selectorColor = Color.white;
+        [SerializeField, Min(0.1f)]
+        private float selectorWidthRatio = 0.85f;
+
+        [SerializeField, Min(0.1f)]
+        private float selectorHeightRatio = 0.85f;
 
         [Header("Animation")]
         [SerializeField, Min(0.05f)] private float moveDuration = 0.25f;
@@ -58,10 +63,17 @@ namespace VertigoGames.UI
             {
                 selector.SetParent(markersRoot, false);
 
-                selector.anchorMin = new Vector2(0f, 0f);
-                selector.anchorMax = new Vector2(0f, 1f);
+                selector.anchorMin = new Vector2(0f, 0.5f);
+                selector.anchorMax = new Vector2(0f, 0.5f);
                 selector.pivot = new Vector2(0.5f, 0.5f);
-                selector.sizeDelta = new Vector2(markerWidth * 1.4f, 0f);
+
+                float selectorWidth = markerWidth * selectorWidthRatio;
+                float selectorHeight = markerWidth * selectorHeightRatio;
+
+                selector.sizeDelta = new Vector2(
+                    selectorWidth,
+                    selectorHeight);
+
                 selector.anchoredPosition = Vector2.zero;
                 selector.SetAsFirstSibling();
             }
@@ -157,18 +169,12 @@ namespace VertigoGames.UI
 
             if (force)
             {
-                selector.anchoredPosition = new Vector2(
-                    targetX,
-                    selectedMarker.anchoredPosition.y);
+                selector.anchoredPosition = new Vector2(targetX, 0f);
             }
             else
             {
                 selectorTween = selector
-                    .DOAnchorPos(
-                        new Vector2(
-                            targetX,
-                            selectedMarker.anchoredPosition.y),
-                        moveDuration)
+                    .DOAnchorPos(new Vector2(targetX, 0f), moveDuration)
                     .SetEase(Ease.OutCubic);
             }
 
