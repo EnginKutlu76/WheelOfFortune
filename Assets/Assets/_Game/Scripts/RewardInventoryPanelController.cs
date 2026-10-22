@@ -32,7 +32,7 @@ namespace VertigoGames.UI
                     .AddComponent<VerticalLayoutGroup>();
 
             layout.childAlignment = TextAnchor.UpperLeft;
-            layout.spacing = 100f;
+            layout.spacing = 110f;
             layout.childControlWidth = true;
             layout.childControlHeight = true;
             layout.childForceExpandWidth = true;

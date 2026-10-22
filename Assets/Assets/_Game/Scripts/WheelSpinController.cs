@@ -394,6 +394,8 @@ namespace VertigoGames.Gameplay
             {
                 rewardPresentationController.Play(
                     selectedSlice.Reward.Icon,
+                    selectedSlice.Reward.DisplayName,
+                    1,
                     FinishRewardPresentation);
             }
             else

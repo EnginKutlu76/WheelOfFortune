@@ -1,3 +1,4 @@
+
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ namespace VertigoGames.UI
         [SerializeField] private TMP_Text resultTitleText;
         [SerializeField] private TMP_Text resultRewardText;
         [SerializeField] private Button restartButton;
+        [SerializeField] private Button reviveButton;
         [SerializeField] private Button spinButton;
 
         [Header("Gameplay References")]
@@ -26,6 +28,9 @@ namespace VertigoGames.UI
             if (restartButton != null)
                 restartButton.onClick.AddListener(RestartGame);
 
+            if (reviveButton != null)
+                reviveButton.onClick.AddListener(ReviveGame);
+
             if (resultPanel != null)
                 resultPanel.SetActive(false);
 
@@ -36,6 +41,9 @@ namespace VertigoGames.UI
         {
             if (restartButton != null)
                 restartButton.onClick.RemoveListener(RestartGame);
+
+            if (reviveButton != null)
+                reviveButton.onClick.RemoveListener(ReviveGame);
         }
 
         private void Update()
@@ -70,8 +78,54 @@ namespace VertigoGames.UI
                     : "ALL ACCUMULATED REWARDS LOST";
             }
 
+            if (reviveButton != null)
+            {
+                reviveButton.gameObject.SetActive(
+                    !collected && GameManager.Instance.CanRevive);
+            }
+
             if (spinButton != null)
                 spinButton.interactable = false;
+        }
+
+        private void ReviveGame()
+        {
+            if (GameManager.Instance == null)
+                return;
+
+            if (!GameManager.Instance.ReviveAfterBomb())
+                return;
+
+            if (rewardPresentationController == null)
+            {
+                rewardPresentationController =
+                    FindFirstObjectByType<RewardPresentationController>(
+                        FindObjectsInactive.Include);
+            }
+
+            if (rewardPresentationController != null)
+                rewardPresentationController.ResetPresentation();
+
+            if (resultPanel != null)
+                resultPanel.SetActive(false);
+
+            resultShown = false;
+
+            if (wheelSpinController == null)
+            {
+                wheelSpinController =
+                    FindFirstObjectByType<WheelSpinController>();
+            }
+
+            if (wheelSpinController != null)
+                wheelSpinController.RefreshAfterRestart();
+
+            if (spinButton != null)
+                spinButton.interactable = true;
+
+            Debug.Log(
+                $"Revive successful. Continuing from zone " +
+                $"{GameManager.Instance.CurrentZone}.");
         }
 
         private void RestartGame()
@@ -81,11 +135,11 @@ namespace VertigoGames.UI
 
             GameManager.Instance.RestartRun();
 
-            // Find the presentation controller even if Inspector reference is missing.
             if (rewardPresentationController == null)
             {
                 rewardPresentationController =
-                    FindFirstObjectByType<RewardPresentationController>(FindObjectsInactive.Include);
+                    FindFirstObjectByType<RewardPresentationController>(
+                        FindObjectsInactive.Include);
             }
 
             if (rewardPresentationController != null)

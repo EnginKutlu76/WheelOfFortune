@@ -29,6 +29,10 @@ namespace VertigoGames.Core
 
         private readonly HashSet<string> ownedCostumeIds = new();
 
+        public bool CanRevive => IsGameOver && !HasExited && !hasUsedRevive;
+
+        private bool hasUsedRevive;
+
         public bool HasCostume(RewardData reward)
         {
             return reward != null &&
@@ -152,10 +156,29 @@ namespace VertigoGames.Core
             CurrentZone = 1;
             AccumulatedRewards = 0;
             rewardStacks.Clear();
+            ownedCostumeIds.Clear();
+
             IsGameOver = false;
             IsSpinning = false;
             HasSpun = false;
             HasExited = false;
+
+            hasUsedRevive = false;
+        }
+
+        public bool ReviveAfterBomb()
+        {
+            if (!CanRevive)
+                return false;
+
+            hasUsedRevive = true;
+
+            IsGameOver = false;
+            IsSpinning = false;
+
+            Debug.Log($"Revived at zone {CurrentZone}.");
+
+            return true;
         }
     }
 }

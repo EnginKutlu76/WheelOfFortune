@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,8 @@ namespace VertigoGames.Gameplay
         [SerializeField] private Image leftSparkle;
         [SerializeField] private Image rightSparkle;
         [SerializeField] private Sprite bombIcon;
+        [SerializeField] private TMP_Text rewardNameText;
+        [SerializeField] private TMP_Text rewardCountText;
 
         [Header("Animation")]
         [SerializeField, Min(0.1f)] private float showDuration = 0.3f;
@@ -37,6 +40,21 @@ namespace VertigoGames.Gameplay
             PlayInternal(rewardSprite, completed, false);
         }
 
+        public void Play(
+            Sprite rewardSprite,
+            string rewardName,
+            int rewardCount,
+            Action completed)
+        {
+            if (rewardNameText != null)
+                rewardNameText.text = rewardName;
+
+            if (rewardCountText != null)
+                rewardCountText.text = $"x{rewardCount}";
+
+            PlayInternal(rewardSprite, completed, false);
+        }
+
         public void ShowBomb()
         {
             if (bombIcon == null)
@@ -44,6 +62,12 @@ namespace VertigoGames.Gameplay
                 Debug.LogError("Bomb icon is not assigned.");
                 return;
             }
+
+            if (rewardNameText != null)
+                rewardNameText.gameObject.SetActive(false);
+
+            if (rewardCountText != null)
+                rewardCountText.gameObject.SetActive(false);
 
             PlayInternal(bombIcon, null, true);
         }
@@ -68,6 +92,15 @@ namespace VertigoGames.Gameplay
             IsPlaying = true;
 
             presentationRoot.SetActive(true);
+
+            if (!keepVisible)
+            {
+                if (rewardNameText != null)
+                    rewardNameText.gameObject.SetActive(true);
+
+                if (rewardCountText != null)
+                    rewardCountText.gameObject.SetActive(true);
+            }
 
             rewardImage.sprite = sprite;
             rewardImage.type = Image.Type.Simple;
@@ -199,6 +232,12 @@ namespace VertigoGames.Gameplay
                 rewardImage.color = Color.white;
             }
 
+            if (rewardNameText != null)
+                rewardNameText.gameObject.SetActive(true);
+
+            if (rewardCountText != null)
+                rewardCountText.gameObject.SetActive(true);
+
             ResetSparkle(leftSparkle);
             ResetSparkle(rightSparkle);
 
@@ -206,7 +245,10 @@ namespace VertigoGames.Gameplay
                 leftSparkle.rectTransform.localRotation = Quaternion.identity;
 
             if (rightSparkle != null)
+            {
                 rightSparkle.rectTransform.localRotation = Quaternion.identity;
+                rightSparkle.color = Color.white;
+            }
         }
 
         private void OnDestroy()
