@@ -170,7 +170,7 @@ namespace VertigoGames.Gameplay
             if (diameter <= 0f)
                 return;
 
-            float radius = diameter * 0.35f;
+            float radius = diameter * 0.30f;
             float iconSize = diameter * 0.10f;
 
             for (int i = 0; i < SliceCount; i++)
