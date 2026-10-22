@@ -47,27 +47,42 @@ namespace VertigoGames.Gameplay
             presentationRoot.SetActive(true);
 
             rewardImage.sprite = rewardSprite;
-            rewardImage.gameObject.SetActive(true);
+            rewardImage.type = Image.Type.Simple;
+            rewardImage.preserveAspect = true;
             rewardImage.color = Color.white;
+            rewardImage.gameObject.SetActive(true);
             rewardImage.rectTransform.localScale = Vector3.zero;
 
             ResetSparkle(leftSparkle);
             ResetSparkle(rightSparkle);
 
+            if (leftSparkle != null)
+                leftSparkle.rectTransform.localRotation = Quaternion.identity;
+
+            if (rightSparkle != null)
+                rightSparkle.rectTransform.localRotation = Quaternion.identity;
+
             sequence = DOTween.Sequence();
 
+            // Brief spark before the reward appears.
+            if (leftSparkle != null)
+            {
+                sequence.Append(
+                    leftSparkle.rectTransform
+                        .DOScale(sparkleScale, 0.08f)
+                        .SetEase(Ease.OutQuad));
+
+                sequence.Append(
+                    leftSparkle.rectTransform
+                        .DOScale(0f, 0.12f)
+                        .SetEase(Ease.InQuad));
+            }
+
+            // Reveal the reward while the right sparkle rotates.
             sequence.Append(
                 rewardImage.rectTransform
                     .DOScale(rewardScale, showDuration)
                     .SetEase(Ease.OutBack));
-
-            if (leftSparkle != null)
-            {
-                sequence.Join(
-                    leftSparkle.rectTransform
-                        .DOScale(sparkleScale, showDuration)
-                        .SetEase(Ease.OutBack));
-            }
 
             if (rightSparkle != null)
             {
@@ -75,6 +90,14 @@ namespace VertigoGames.Gameplay
                     rightSparkle.rectTransform
                         .DOScale(sparkleScale, showDuration)
                         .SetEase(Ease.OutBack));
+
+                sequence.Join(
+                    rightSparkle.rectTransform
+                        .DOLocalRotate(
+                            new Vector3(0f, 0f, 360f),
+                            showDuration,
+                            RotateMode.FastBeyond360)
+                        .SetEase(Ease.OutCubic));
             }
 
             sequence.AppendInterval(holdDuration);
@@ -84,19 +107,14 @@ namespace VertigoGames.Gameplay
                     .DOScale(0f, hideDuration)
                     .SetEase(Ease.InBack));
 
-            sequence.Join(
-                rewardImage.DOFade(0f, hideDuration));
-
-            if (leftSparkle != null)
-            {
-                sequence.Join(
-                    leftSparkle.DOFade(0f, hideDuration));
-            }
+            sequence.Join(rewardImage.DOFade(0f, hideDuration));
 
             if (rightSparkle != null)
             {
                 sequence.Join(
-                    rightSparkle.DOFade(0f, hideDuration));
+                    rightSparkle.rectTransform
+                        .DOScale(0f, hideDuration)
+                        .SetEase(Ease.InBack));
             }
 
             sequence.OnComplete(Finish);

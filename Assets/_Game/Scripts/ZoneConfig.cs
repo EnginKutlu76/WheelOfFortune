@@ -1,7 +1,7 @@
-
 using System.Collections.Generic;
 using UnityEngine;
 using VertigoGames.Gameplay;
+using VertigoGames.Core;
 
 namespace VertigoGames.Data
 {
@@ -127,8 +127,15 @@ namespace VertigoGames.Data
             int rewardCount = 8 - (
                 zoneType == ZoneType.Normal ? bombSliceCount : 0);
 
+            GameManager manager = GameManager.Instance;
+
             List<RewardData> rewards =
-                rewardPool.GetRandomRewardsWithoutReplacement(rewardCount);
+                rewardPool.GetRandomRewardsWithoutReplacement(
+                    rewardCount,
+                    reward =>
+                        reward.Category != RewardCategory.Costume ||
+                        manager == null ||
+                        !manager.HasCostume(reward));
 
             if (rewards == null || rewards.Count != rewardCount)
             {

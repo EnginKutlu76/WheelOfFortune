@@ -78,18 +78,41 @@ namespace VertigoGames.Data
 
         public List<RewardData> GetRandomRewardsWithoutReplacement(int count)
         {
+            return GetRandomRewardsWithoutReplacement(count, null);
+        }
+
+        public List<RewardData> GetRandomRewardsWithoutReplacement(
+            int count,
+            Predicate<RewardData> canSelect)
+        {
             var available = new List<Entry>();
 
             if (entries != null)
             {
                 foreach (Entry entry in entries)
                 {
-                    if (entry != null &&
-                        entry.IsValid &&
-                        entry.Weight > 0f)
+                    if (entry == null ||
+                        !entry.IsValid ||
+                        entry.Weight <= 0f)
+                        continue;
+
+                    if (canSelect != null && !canSelect(entry.Reward))
+                        continue;
+
+                    // Avoid duplicate references to the same reward asset.
+                    bool alreadyAdded = false;
+
+                    foreach (Entry existing in available)
                     {
-                        available.Add(entry);
+                        if (existing.Reward == entry.Reward)
+                        {
+                            alreadyAdded = true;
+                            break;
+                        }
                     }
+
+                    if (!alreadyAdded)
+                        available.Add(entry);
                 }
             }
 

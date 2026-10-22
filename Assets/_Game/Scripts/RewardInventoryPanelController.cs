@@ -1,23 +1,62 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using VertigoGames.Core;
 
 namespace VertigoGames.UI
 {
     public class RewardInventoryPanelController : MonoBehaviour
     {
-        [SerializeField] private Transform contentRoot;
+        [Header("References")]
+        [SerializeField] private RectTransform contentRoot;
         [SerializeField] private RewardInventoryItemUI itemPrefab;
 
         private readonly Dictionary<GameManager.RewardStack,
             RewardInventoryItemUI> items = new();
 
+        private void Awake()
+        {
+            if (contentRoot == null || itemPrefab == null)
+            {
+                Debug.LogError(
+                    "Reward inventory references are missing.", this);
+                return;
+            }
+
+            VerticalLayoutGroup layout =
+                contentRoot.GetComponent<VerticalLayoutGroup>();
+
+            if (layout == null)
+                layout = contentRoot.gameObject
+                    .AddComponent<VerticalLayoutGroup>();
+
+            layout.childAlignment = TextAnchor.UpperLeft;
+            layout.spacing = 100f;
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandWidth = true;
+            layout.childForceExpandHeight = false;
+
+            ContentSizeFitter fitter =
+                contentRoot.GetComponent<ContentSizeFitter>();
+
+            if (fitter == null)
+                fitter = contentRoot.gameObject
+                    .AddComponent<ContentSizeFitter>();
+
+            fitter.horizontalFit =
+                ContentSizeFitter.FitMode.Unconstrained;
+            fitter.verticalFit =
+                ContentSizeFitter.FitMode.PreferredSize;
+        }
+
         private void Update()
         {
             GameManager manager = GameManager.Instance;
 
-            if (manager == null || contentRoot == null || itemPrefab == null)
+            if (manager == null || contentRoot == null ||
+                itemPrefab == null)
                 return;
 
             IReadOnlyList<GameManager.RewardStack> stacks =
@@ -38,10 +77,18 @@ namespace VertigoGames.UI
 
             foreach (GameManager.RewardStack stack in manager.RewardStacks)
             {
-                RewardInventoryItemUI item = Instantiate(itemPrefab, contentRoot);
+                if (stack == null || stack.Reward == null)
+                    continue;
+
+                RewardInventoryItemUI item =
+                    Instantiate(itemPrefab, contentRoot);
+
+                item.name = $"ui_reward_item_{stack.Reward.RewardId}";
                 item.Bind(stack);
                 items.Add(stack, item);
             }
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot);
         }
 
         private void RefreshItems(
@@ -49,8 +96,11 @@ namespace VertigoGames.UI
         {
             foreach (GameManager.RewardStack stack in stacks)
             {
-                if (items.TryGetValue(stack, out RewardInventoryItemUI item))
+                if (stack != null &&
+                    items.TryGetValue(stack, out RewardInventoryItemUI item))
+                {
                     item.Refresh(stack);
+                }
             }
         }
     }

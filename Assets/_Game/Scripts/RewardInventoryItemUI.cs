@@ -1,7 +1,7 @@
 
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using VertigoGames.Core;
 
 namespace VertigoGames.UI
@@ -9,8 +9,6 @@ namespace VertigoGames.UI
     public class RewardInventoryItemUI : MonoBehaviour
     {
         [SerializeField] private Image iconImage;
-        [SerializeField] private TMP_Text nameText;
-        [SerializeField] private TMP_Text countText;
         [SerializeField] private TMP_Text totalValueText;
 
         public void Bind(GameManager.RewardStack stack)
@@ -19,10 +17,12 @@ namespace VertigoGames.UI
                 return;
 
             if (iconImage != null)
-                iconImage.sprite = stack.Reward.Icon;
-
-            if (nameText != null)
-                nameText.text = stack.Reward.DisplayName;
+            {
+                iconImage.sprite = stack.Reward.InventoryIcon;
+                iconImage.preserveAspect = true;
+                iconImage.color = Color.white;
+                iconImage.enabled = iconImage.sprite != null;
+            }
 
             Refresh(stack);
         }
@@ -31,9 +31,6 @@ namespace VertigoGames.UI
         {
             if (stack == null)
                 return;
-
-            if (countText != null)
-                countText.text = $"x{stack.Count}";
 
             if (totalValueText != null)
                 totalValueText.text = stack.TotalValue.ToString();

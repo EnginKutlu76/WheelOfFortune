@@ -61,7 +61,7 @@ namespace VertigoGames.UI
                 selector.anchorMin = new Vector2(0f, 0f);
                 selector.anchorMax = new Vector2(0f, 1f);
                 selector.pivot = new Vector2(0.5f, 0.5f);
-                selector.sizeDelta = new Vector2(markerWidth * 0.9f, 0f);
+                selector.sizeDelta = new Vector2(markerWidth * 1.4f, 0f);
                 selector.anchoredPosition = Vector2.zero;
                 selector.SetAsFirstSibling();
             }

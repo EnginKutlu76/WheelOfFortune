@@ -1,4 +1,4 @@
-
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using VertigoGames.Data;
@@ -26,6 +26,15 @@ namespace VertigoGames.Core
         public IReadOnlyList<RewardStack> RewardStacks => rewardStacks;
 
         private readonly List<RewardStack> rewardStacks = new();
+
+        private readonly HashSet<string> ownedCostumeIds = new();
+
+        public bool HasCostume(RewardData reward)
+        {
+            return reward != null &&
+                   !string.IsNullOrWhiteSpace(reward.RewardId) &&
+                   ownedCostumeIds.Contains(reward.RewardId);
+        }
 
         public sealed class RewardStack
         {
@@ -80,18 +89,25 @@ namespace VertigoGames.Core
             Debug.Log($"Advanced to zone {CurrentZone} ({CurrentZoneType}).");
         }
 
-        public void AddReward(int amount)
-        {
-            if (IsGameOver || HasExited || amount < 0)
-                return;
-
-            AccumulatedRewards += amount;
-        }
-
         public void AddReward(RewardData reward, int amount)
         {
             if (reward == null || IsGameOver || HasExited || amount < 0)
                 return;
+
+            if (reward.Category == RewardCategory.Costume)
+            {
+                if (HasCostume(reward))
+                    return;
+
+                if (string.IsNullOrWhiteSpace(reward.RewardId))
+                {
+                    Debug.LogError(
+                        "Costume reward requires a valid Reward ID.", reward);
+                    return;
+                }
+
+                ownedCostumeIds.Add(reward.RewardId);
+            }
 
             AccumulatedRewards += amount;
 
@@ -114,6 +130,7 @@ namespace VertigoGames.Core
 
             AccumulatedRewards = 0;
             rewardStacks.Clear();
+            ownedCostumeIds.Clear();
             IsGameOver = true;
             IsSpinning = false;
 
