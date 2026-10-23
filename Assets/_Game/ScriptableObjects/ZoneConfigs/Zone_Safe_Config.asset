@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9596bc682f8e1de4588c44bd4c6f8575, type: 3}
+  m_Name: Zone_Safe_Config
+  m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.Data.ZoneConfig
+  zoneType: 1
+  rewardPool: {fileID: 11400000, guid: 3f0fa6d185400dd48992209fe5a26d7d, type: 2}
+  bombSliceCount: 0
+  wheelSprite: {fileID: -4250264824657568362, guid: edb13dba42dc95247bbd6f51c735a325, type: 3}
+  pointerSprite: {fileID: 2528496851094761378, guid: b8fd5e88404daf84c8f815c14b096b40, type: 3}
+  baseMultiplier: 1
+  multiplierPerZone: 0.15

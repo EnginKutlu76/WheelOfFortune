@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 622d30dc22815d84d8bba553fafcb3f5, type: 3}
+  m_Name: Zone_Normal_Config
+  m_EditorClassIdentifier: Assembly-CSharp::VertigoGames.Data.ZoneConfigSet
+  normalTiers:
+  - fromZone: 1
+    config: {fileID: 11400000, guid: 872b7402caf26bc44808b48ee4868540, type: 2}
+  - fromZone: 10
+    config: {fileID: 11400000, guid: 872b7402caf26bc44808b48ee4868540, type: 2}
+  - fromZone: 20
+    config: {fileID: 11400000, guid: 872b7402caf26bc44808b48ee4868540, type: 2}
+  safeConfig: {fileID: 11400000, guid: a454bd560afbecc4fab6633910986643, type: 2}
+  superConfig: {fileID: 11400000, guid: 517d5354eb0f77847b3ab9d2a0d4ef40, type: 2}
