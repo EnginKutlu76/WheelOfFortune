@@ -1,73 +1,128 @@
 # Wheel of Fortune
 
-A mobile wheel-of-fortune game demo built with **Unity 6000.3.23f1** for the Vertigo Games Game Developer case. Spin the wheel, collect rewards, avoid the bomb, and decide when to cash out.
+A mobile wheel-spin game demo developed with **Unity 6000.3.23f1** for the Vertigo Games Game Developer case.
 
-[![Gameplay video](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://www.youtube.com/watch?v=VIDEO_ID)
+Spin the wheel, collect rewards, manage risk, and decide when to cash out. The game features regular, safe (silver), and super (gold) zones with configurable rewards and gameplay rules.
 
-**[▶ Watch the gameplay video]([https://www.youtube.com/watch?v=VIDEO_ID](https://www.youtube.com/watch?v=Yl71GhKHQrE))** · **[⬇ Download the APK](https://github.com/EnginKutlu76/WheelOfFortune/releases/latest)**
+**[▶ Watch Gameplay Video](https://www.youtube.com/watch?v=Yl71GhKHQrE)** · **[⬇ Download Android APK](https://github.com/EnginKutlu76/WheelOfFortune/blob/main/Builds/Android/WheelOfFortune.apk)**
 
 ## Screenshots
 
 | 20:9 | 16:9 | 4:3 |
 |---|---|---|
-| <img src="Docs/Screenshots/screenshot_20x9.png" width="300"> | <img src="Docs/Screenshots/screenshot_16x9.png" width="300"> | <img src="Docs/Screenshots/screenshot_4x3.png" width="300"> |
+| ![Gameplay 20:9](Docs/screenshot_20x9.png) | ![Gameplay 16:9](Docs/screenshot_16x9.png) | ![Gameplay 4:3](Docs/screenshot_4x3.png) |
 
-## How it works
+## Gameplay
 
-- Every zone has a wheel with **8 slices**. The player spins instead of picking a card.
-- **Normal zones** contain exactly one bomb. Rewards get better as the zone number grows.
-- **Safe zone** (every 5th): silver wheel, no bomb, risk-free spin.
-- **Super zone** (every 30th): golden wheel, special rewards, no bomb, risk-free spin.
-- **Collect** (cash out) is available only on safe and super zones, and only while the wheel is idle.
-- **Bomb:** the player can revive once to keep the rewards. Otherwise everything is lost and the run restarts.
-- The result is decided before the spin animation starts, so the wheel always lands on the pre-selected slice.
+- Spin a wheel containing 8 slices to win rewards or encounter a bomb.
+- Regular zones contain a bomb, putting accumulated rewards at risk.
+- Every 5th zone is a **Safe Zone**, featuring a silver wheel without bombs.
+- Every 30th zone is a **Super Zone**, featuring a gold wheel, special rewards, and no bombs.
+- The Collect option becomes available in eligible zones when the wheel is idle.
+- Players can revive once after hitting a bomb to preserve accumulated rewards. If a bomb is hit again after the revive has been used, accumulated rewards are lost.
+- The spin result is selected before the animation starts, ensuring the wheel animation matches the selected outcome.
 
 ## Features
 
-- Slice contents, reward pools, multipliers and bomb counts are editable in the Editor through ScriptableObjects.
-- Responsive UI for **20:9, 16:9 and 4:3** (Canvas Scaler *Expand*, anchor/pivot-based layout, TextMeshPro).
-- DOTween animations, Sprite Atlases, prefab-based UI, object pooling for the reward inventory.
-- Event-driven UI (no `Update` polling), no Inspector `OnClick` references (buttons are bound in code, references are auto-assigned in `OnValidate`).
-- Editor tooling: **Tools > Vertigo > UI Audit** checks Raycast Target, Maskable, Sliced images, naming and Canvas Scaler rules.
-- 34 automated EditMode tests.
+- **Data-driven gameplay:** Reward pools, zone configurations, slice weights, and reward values are configurable through ScriptableObjects.
+- **Responsive UI:** TextMeshPro and anchor-based layouts designed for different aspect ratios.
+- **Wheel animation:** DOTween-based rotation and animation sequences.
+- **Sprite Atlases:** Organized sprite assets for UI rendering.
+- **UI architecture:** Separate views for the HUD, cash-out, results, reward inventory, and zone progression.
+- **Editor tooling:** UI Audit tool for checking naming conventions and UI configuration.
+- **Automated tests:** EditMode tests covering game state, zone rules, reward configuration, and wheel selection.
 
 ## Architecture
 
-| Layer | Contents |
+The project separates gameplay state and rules from Unity-facing presentation and controllers.
+
+| Layer | Responsibility |
 |---|---|
-| **Domain** (pure C#, assembly `VertigoGames.Domain`) | `RunState` (game rules), `ZoneRules`, `WheelSelector`, `WheelMath`, `IRandom`, ScriptableObject data (`ZoneConfigSet`, `ZoneConfig`, `RewardPoolData`, `RewardData`) |
-| **Game** | `GameController` (composition root), `WheelSpinController`, `WheelSliceVisualController`, view classes (`HudView`, `CashOutView`, `ResultView`, `RewardInventoryView`, `ZoneProgressView`), `AudioManager` |
+| **Domain** | Game state, reward stacking, zone rules, wheel selection, and reward data |
+| **Game** | Game controller, spin orchestration, audio, and UI view binding |
+| **Presentation** | Reward animations and wheel slice visuals |
+| **Editor** | UI audit and validation tools |
+| **Tests** | EditMode tests for core gameplay behavior |
 
-Design decisions:
+### Design Principles
 
-- **Game rules live in `RunState`**, a plain C# class with no Unity dependency, so they can be unit tested.
-- **UI reacts to `RunState.Changed`** instead of polling every frame, which is cheaper on mobile.
-- **Randomness goes through `IRandom`**, so spin selection is deterministic in tests.
-- **Data-driven config:** `ZoneConfigSet` → `ZoneConfig` → `RewardPoolData` → `RewardData`.
-- `GameController` is the only place that wires views, wheel, audio and state together.
+- Gameplay state is managed by `RunState`, independently of `MonoBehaviour`.
+- Zone behavior is centralized in `ZoneRules`.
+- Wheel selection uses an `IRandom` abstraction to support deterministic testing.
+- Reward and zone configuration is data-driven through ScriptableObjects.
+- `GameController` connects gameplay systems and UI views.
+- UI views respond to state changes instead of continuously polling the game state.
 
-## Project structure
+## Project Structure
 
+```text
+Assets/
+  _Game/
+    Scenes/
+      Game.unity
+    Scripts/
+      Domain/
+        Common/
+        Core/
+        Data/
+      Game/
+        App/
+        Audio/
+        Gameplay/
+        UI/
+      Rewards/
+      Wheel/
+    Tests/
+Builds/
+  Android/
+    WheelOfFortune.apk
+Docs/
+  screenshot_20x9.png
+  screenshot_16x9.png
+  screenshot_4x3.png
+Packages/
+ProjectSettings/
 ```
-Assets/_Game/
-  Art/            sprites and Sprite Atlases
-  Audio/          SFX
-  Editor/         UI audit tool
-  Prefabs/        UI prefabs
-  ScriptableObjects/  reward pools, zone configs
-  Scenes/Game.unity
-  Scripts/
-    Domain/       pure game logic and data (own assembly)
-    Game/         controllers, views, audio
-  Tests/          EditMode tests (own assembly)
-```
 
-## Getting started
+## Getting Started
 
-1. Open the project with **Unity 6000.3.23f1**.
-2. Open `Assets/_Game/Scenes/Game.unity` and press Play.
-3. Run tests: *Window > General > Test Runner > EditMode > Run All*.
+### Requirements
 
-## Build
+- Unity **6000.3.23f1**
+- Android Build Support, including Android SDK & NDK Tools and OpenJDK, to create Android builds
 
-Android, IL2CPP, ARM64. The signed release APK is available on the [Releases page](https://github.com/EnginKutlu76/WheelOfFortune/releases/latest).
+### Run in Unity
+
+1. Clone or download this repository.
+2. Open the project using Unity Hub with Unity `6000.3.23f1`.
+3. Open `Assets/_Game/Scenes/Game.unity`.
+4. Press **Play** in the Unity Editor.
+
+### Run Automated Tests
+
+1. Open **Window → General → Test Runner**.
+2. Select **EditMode**.
+3. Click **Run All**.
+
+## Android Build
+
+A tested Android APK is included in the repository.
+
+**[Download WheelOfFortune.apk](https://github.com/EnginKutlu76/WheelOfFortune/blob/main/Builds/Android/WheelOfFortune.apk)**
+
+To create a new build:
+
+1. Open **File → Build Profiles**.
+2. Select Android and switch to the Android platform if necessary.
+3. Ensure the required scenes are included in the build profile.
+4. Disable **Build App Bundle** to generate an APK.
+5. Click **Build** and choose an output location.
+
+## Project Information
+
+- **Project:** Wheel of Fortune
+- **Engine:** Unity 6000.3.23f1
+- **Platform:** Android
+- **Purpose:** Vertigo Games Game Developer demo case
+- **Status:** Functional demo, tested on an Android device
+
