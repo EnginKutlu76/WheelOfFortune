@@ -12,7 +12,8 @@ namespace VertigoGames.Tests
 {
     public class ZoneConfigTests
     {
-        private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        private const BindingFlags Flags =
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
         private static void Set(object target, string field, object value) =>
             target.GetType().GetField(field, Flags).SetValue(target, value);
@@ -95,7 +96,7 @@ namespace VertigoGames.Tests
         [Test]
         public void CreateSpinSlices_PoolTooSmall_ReturnsNull()
         {
-            //LogAssert.Expect(LogType.Error, new Regex("Pool needs"));
+            LogAssert.Expect(LogType.Error, new Regex("Pool needs"));
 
             Assert.IsNull(
                 Config(ZoneType.Normal, 1, 3).CreateSpinSlices(null, new FakeRandom()));

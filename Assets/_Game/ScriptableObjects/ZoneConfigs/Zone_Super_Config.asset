@@ -17,5 +17,5 @@ MonoBehaviour:
   bombSliceCount: 0
   wheelSprite: {fileID: 5770997025872212153, guid: 565399db861703b4da5591c332114ec3, type: 3}
   pointerSprite: {fileID: 8294000708589155680, guid: fa0ae89ab2f73e24595acc6cb0173f57, type: 3}
-  baseMultiplier: 1
-  multiplierPerZone: 0.15
+  baseMultiplier: 10
+  multiplierPerZone: 0

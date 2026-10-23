@@ -20,7 +20,7 @@ namespace VertigoGames.Gameplay
 
         [Header("Layout")]
         [SerializeField, Range(0.1f, 0.5f)] private float radiusRatio = 0.30f;
-        [SerializeField, Range(0.05f, 0.2f)] private float iconSizeRatio = 0.07f;
+        [SerializeField, Range(0.05f, 0.2f)] private float iconSizeRatio = 0.10f;
         [SerializeField, Range(0.01f, 0.15f)] private float valueOffsetRatio = 0.045f;
         [SerializeField] private float startAngle = 90f;
 

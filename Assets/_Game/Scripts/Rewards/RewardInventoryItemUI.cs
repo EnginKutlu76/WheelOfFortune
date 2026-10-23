@@ -24,6 +24,8 @@ namespace VertigoGames.UI
             Sprite icon = stack.Reward.InventoryIcon;
 
             iconImage.sprite = icon;
+            iconImage.preserveAspect = true;
+            iconImage.maskable = true;
             iconImage.enabled = icon != null;
 
             Refresh(stack);
